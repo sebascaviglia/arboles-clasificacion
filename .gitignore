@@ -1,39 +1,37 @@
-# History files
-.Rhistory
-.Rapp.history
 
-# Session Data files
-.RData
+```{r}
+# arboles de clasificacion
 
-# User-specific files
-.Ruserdata
+#instalamos librerias 
 
-# Example code in package build process
-*-Ex.R
+library(rpart)
+library(rpart.plot)
+library(caret)
 
-# Output files from R CMD build
-/*.tar.gz
+# cargamos data set
 
-# Output files from R CMD check
-/*.Rcheck/
+banknote <- read.csv("../Desktop/sebastian/r studio/cheat sheet/banknote-authentication.csv.txt")
 
-# RStudio files
-.Rproj.user/
+# creamos muestra 
 
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
+set.seed(2018)
 
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
+# creamos training id con el 0.7 de la muestra
 
-# knitr and R markdown default cache directories
-*_cache/
-/cache/
+training.ids <- createDataPartition(banknote$class, p= 0.7 , list = FALSE )
 
-# Temporary files created by R markdown
-*.utf8.md
-*.knit.md
+# creamos el modelo con class dependiendo de las demas variables
 
-# R Environment Variables
-.Renviron
+mod <- rpart(class ~ . , data = banknote[training.ids ,],
+                    method = "class",
+                    control = rpart.control(minsplit = 20 , cp = 0.01))
+
+# ejecutamos el modelo
+mod
+
+# plot el modelo
+
+prp(mod, type = 2 , extra = 104 , nn = TRUE ,
+    fallen.leaves = TRUE, faclen = 4, varlen = 8 , shadow.col = "grey")
+
+```
